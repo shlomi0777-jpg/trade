@@ -1106,13 +1106,29 @@ STOP_LADDER_MID = [(8.0, 0.0), (12.0, 4.0), (18.0, 10.0),
 
 # ===== זהות הגרסה =====
 # תווית קריאה במקום MD5. מתעדכנת בכל כתיבה.
-APP_VERSION = "v067 · 21/08/2026 12:53"
+APP_VERSION = "v068 · 21/08/2026 13:08"
 _AUDIT_DONE = {}
 
 # VIX-SIZING: גודל חשיפה לפי VIX.
 # הממצא היחיד ששרד מבחן תת-תקופות ורצפת רעש הוגנת —
 # ועם חולשה מוכחת ב-2022-23. ניסוי, לא ברירת מחדל.
 _VIX_SIZING = "off"
+
+# COOL-MODE: מדיניות ההמתנה אחרי יציאה, ניתנת לכיול.
+# ההשערה: המתנה מוצדקת אחרי כישלון (סטופ), לא אחרי
+# יציאה מתוכננת כמו לפני-דוח או סוף האופק.
+_COOL_MODE = "current"
+
+
+def _cool_days(reason):
+    """כמה ימים להמתין לפני כניסה חוזרת, לפי הסיבה."""
+    if _COOL_MODE == "off":
+        return 0
+    if _COOL_MODE == "sl_only":
+        return 10 if reason == "SL" else 0
+    if _COOL_MODE == "short":
+        return 3
+    return COOLDOWN_BY_REASON.get(reason, COOLDOWN_DEFAULT)
 _VIX_MAP = None          # {date -> vix}
 _VIX_EXPOSURE = []       # מקדמים בפועל, לדיווח
 
@@ -2917,7 +2933,7 @@ def run_backtest_single(df, ticker="", score_threshold=70, max_holding_days=30,
                     ret_pct = apply_trade_cost(gross_ret, cost_pct_per_side)
                 # הזיכרון: כמה ימים להמתין לפני כניסה חוזרת למניה הזו
                 last_exit_reason = reason
-                cooldown_until = i + COOLDOWN_BY_REASON.get(reason, COOLDOWN_DEFAULT)
+                cooldown_until = i + _cool_days(reason)
                 trades.append({"ticker": ticker, "entry_date": dates[entry_idx], "exit_date": dates[i],
                                 "entry": entry_price, "exit": exit_price,
                                 "gross_return_pct": gross_ret,
@@ -5088,7 +5104,7 @@ with tab_backtest:
         "vb2":           DEFAULTS["vb2"],
         "vb3":           DEFAULTS["vb3"],
         # מתגי בדיקה שאין להם מקבילה ב-DEFAULTS — כבויים
-        "cost": 0.05, "vix_size": "off", "use_reversal": False, "weekly": False, "three_day": False,
+        "cost": 0.05, "vix_size": "off", "cool_mode": "current", "use_reversal": False, "weekly": False, "three_day": False,
         "em_filter": False, "max_wk": 0,
         "vix": "ignore", "rev": "sma20", "entry": "close", "macro": "off",
     }
@@ -5129,6 +5145,12 @@ with tab_backtest:
             ("5 +\u05e9\u05d1\u05d5\u05e2\u05d9", {"dir_vol": False, "block_overext": False, "threshold": 55, "max_days": 20, "weekly": True}),
             ("6 +\u05d4\u05d9\u05e4\u05d5\u05da", {"dir_vol": False, "block_overext": False, "threshold": 55, "max_days": 20, "weekly": True, "use_reversal": True, "rev": "both"}),
             ("7 +\u05e7\u05d9\u05d3\u05d5\u05dd \u05de\u05d1\u05e0\u05d9", {"dir_vol": False, "block_overext": False, "threshold": 55, "max_days": 20, "weekly": True, "use_reversal": True, "rev": "both", "exit": "structural_trail"}),
+        ],
+        "47 מדיניות המתנה": [
+            ("כבוי", {"cooldown": False}),
+            ("נוכחי", {"cool_mode": "current"}),
+            ("רק אחרי סטופ", {"cool_mode": "sl_only"}),
+            ("קצר · 3 ימים", {"cool_mode": "short"}),
         ],
         "46 חשיפה לפי VIX": [
             ("קבוע", {"vix_size": "off"}),
@@ -5667,6 +5689,7 @@ with tab_backtest:
                         effective_cost = ovr.get("cost", _BASE["cost"])
                         # VIX-SIZING: הסכמה נקבעת כאן, יחד עם שאר הדריסות.
                         globals()["_VIX_SIZING"] = ovr.get("vix_size", _BASE.get("vix_size", "off"))
+                        globals()["_COOL_MODE"] = ovr.get("cool_mode", _BASE.get("cool_mode", "current"))
                         # AUDIT-EVERY-RUN: הערך נדרס כאן. הפלט חייב לדווח את מה
                         # שהמנוע קיבל בפועל, והמבדק חייב לרוץ בכל תצורה.
                         try:
@@ -5836,6 +5859,7 @@ with tab_backtest:
                 effective_cost = ovr.get("cost", _BASE["cost"])
                 # VIX-SIZING: הסכמה נקבעת כאן, יחד עם שאר הדריסות.
                 globals()["_VIX_SIZING"] = ovr.get("vix_size", _BASE.get("vix_size", "off"))
+                globals()["_COOL_MODE"] = ovr.get("cool_mode", _BASE.get("cool_mode", "current"))
                 # AUDIT-EVERY-RUN: הערך נדרס כאן. הפלט חייב לדווח את מה
                 # שהמנוע קיבל בפועל, והמבדק חייב לרוץ בכל תצורה.
                 try:
@@ -5974,6 +5998,7 @@ with tab_backtest:
                         effective_cost = ovr.get("cost", _BASE["cost"])
                         # VIX-SIZING: הסכמה נקבעת כאן, יחד עם שאר הדריסות.
                         globals()["_VIX_SIZING"] = ovr.get("vix_size", _BASE.get("vix_size", "off"))
+                        globals()["_COOL_MODE"] = ovr.get("cool_mode", _BASE.get("cool_mode", "current"))
                         # AUDIT-EVERY-RUN: הערך נדרס כאן. הפלט חייב לדווח את מה
                         # שהמנוע קיבל בפועל, והמבדק חייב לרוץ בכל תצורה.
                         try:
