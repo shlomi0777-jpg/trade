@@ -1106,8 +1106,28 @@ STOP_LADDER_MID = [(8.0, 0.0), (12.0, 4.0), (18.0, 10.0),
 
 # ===== זהות הגרסה =====
 # תווית קריאה במקום MD5. מתעדכנת בכל כתיבה.
-APP_VERSION = "v065 · 20/08/2026 16:27"
+APP_VERSION = "v066 · 21/08/2026 12:32"
 _AUDIT_DONE = {}
+
+# VIX-SIZING: גודל חשיפה לפי VIX.
+# הממצא היחיד ששרד מבחן תת-תקופות ורצפת רעש הוגנת —
+# ועם חולשה מוכחת ב-2022-23. ניסוי, לא ברירת מחדל.
+_VIX_SIZING = "off"
+_VIX_MAP = None          # {date -> vix}
+_VIX_EXPOSURE = []       # מקדמים בפועל, לדיווח
+
+
+def _vix_weight(d):
+    """מקדם לגודל הפוזיציה ביום d. 1.0 = ללא שינוי."""
+    if _VIX_SIZING != "tiered" or not _VIX_MAP:
+        return 1.0
+    v = _VIX_MAP.get(d)
+    if v is None or not np.isfinite(v):
+        return 1.0
+    if v < 15:  return 0.5
+    if v < 20:  return 1.0
+    if v < 25:  return 1.5
+    return 2.0
 
 # ===== זיכרון: כמה ימים להמתין לפני כניסה חוזרת =====
 # הסיבה ליציאה משנה. יציאה לפני דוח היא ניהול סיכון מתוכנן,
@@ -1599,6 +1619,9 @@ def build_text_report(label, cfg, sm, bm, trades, pts, blocked, failed):
             _pct = (_sk / _tot * 100) if _tot else 0
             A(f"  נדחו מחוסר הון: {_sk} ({_pct:.0f}% מהטריידים — התיק רץ על השאר)")
             A(f"  שיא פוזיציות במקביל: {_mc}")
+            if _VIX_EXPOSURE:
+                _av = sum(_VIX_EXPOSURE) / len(_VIX_EXPOSURE)
+                A(f"  מקדם חשיפה ממוצע: {_av:.2f}  (1.00 = ללא שינוי)")
         A(f"  SHARPE: {sh:.2f}" if sh else "  SHARPE: n/a")
         A(f"  CALMAR: {ca:.2f}" if ca else "  CALMAR: n/a")
     rs={}
@@ -2945,6 +2968,7 @@ def simulate_realistic_portfolio(trades, position_pct=5.0, initial_capital=100.0
         pmap = pmap or None
 
     skipped = 0
+    globals()["_VIX_EXPOSURE"] = []
     daily = pmap is not None
 
     if not daily:
@@ -3023,7 +3047,9 @@ def simulate_realistic_portfolio(trades, position_pct=5.0, initial_capital=100.0
                     skipped += 1
                     continue
                 cur_eq = cash + sum(_value(p) for p in open_pos.values())
-                alloc = cur_eq * (position_pct / 100)
+                _w = _vix_weight(d)
+                _VIX_EXPOSURE.append(_w)
+                alloc = cur_eq * (position_pct / 100) * _w
                 if alloc > cash:
                     skipped += 1
                     continue
@@ -3177,6 +3203,13 @@ def run_aggregate(tickers, earnings_mode, bt_period, bt_threshold, bt_max_days,
     agg_blocked = {}
     # VIX נשלף פעם אחת לכל הריצה (לא פר-מניה) - חוסך קריאות רשת מיותרות
     vix_series = fetch_vix_history(bt_period) if vix_mode != "ignore" else None
+    # VIX-SIZING: נשלף בנפרד לצורך גודל חשיפה, ללא תלות בפילטר.
+    try:
+        _vx = vix_series if vix_series is not None else fetch_vix_history(bt_period)
+        globals()["_VIX_MAP"] = {d: float(v) for d, v in _vx.items()
+                                 if np.isfinite(v)} if _vx is not None else None
+    except Exception:
+        globals()["_VIX_MAP"] = None
     spy_series = fetch_spy_history(bt_period) if macro_exit_mode != "off" else None
     if vix_mode != "ignore" and vix_series is None:
         st.markdown("<div class='unknown-box'>⚠️ לא ניתן לשלוף היסטוריית VIX - מסנן ה-VIX לא יופעל בריצה הזו.</div>", unsafe_allow_html=True)
@@ -5033,7 +5066,7 @@ with tab_backtest:
         "vb2":           DEFAULTS["vb2"],
         "vb3":           DEFAULTS["vb3"],
         # מתגי בדיקה שאין להם מקבילה ב-DEFAULTS — כבויים
-        "cost": 0.05, "use_reversal": False, "weekly": False, "three_day": False,
+        "cost": 0.05, "vix_size": "off", "use_reversal": False, "weekly": False, "three_day": False,
         "em_filter": False, "max_wk": 0,
         "vix": "ignore", "rev": "sma20", "entry": "close", "macro": "off",
     }
@@ -5074,6 +5107,10 @@ with tab_backtest:
             ("5 +\u05e9\u05d1\u05d5\u05e2\u05d9", {"dir_vol": False, "block_overext": False, "threshold": 55, "max_days": 20, "weekly": True}),
             ("6 +\u05d4\u05d9\u05e4\u05d5\u05da", {"dir_vol": False, "block_overext": False, "threshold": 55, "max_days": 20, "weekly": True, "use_reversal": True, "rev": "both"}),
             ("7 +\u05e7\u05d9\u05d3\u05d5\u05dd \u05de\u05d1\u05e0\u05d9", {"dir_vol": False, "block_overext": False, "threshold": 55, "max_days": 20, "weekly": True, "use_reversal": True, "rev": "both", "exit": "structural_trail"}),
+        ],
+        "46 חשיפה לפי VIX": [
+            ("קבוע", {"vix_size": "off"}),
+            ("מדורג לפי VIX", {"vix_size": "tiered"}),
         ],
         "45 תקרת פוזיציות": [
             ("ללא הגבלה", {"max_pos": 0}),
@@ -5606,6 +5643,8 @@ with tab_backtest:
                         use_em_filter = ovr.get("em_filter", _BASE["em_filter"])
                         max_trades_per_week = ovr.get("max_wk", _BASE["max_wk"])
                         effective_cost = ovr.get("cost", _BASE["cost"])
+                        # VIX-SIZING: הסכמה נקבעת כאן, יחד עם שאר הדריסות.
+                        globals()["_VIX_SIZING"] = ovr.get("vix_size", _BASE.get("vix_size", "off"))
                         # AUDIT-EVERY-RUN: הערך נדרס כאן. הפלט חייב לדווח את מה
                         # שהמנוע קיבל בפועל, והמבדק חייב לרוץ בכל תצורה.
                         try:
@@ -5773,6 +5812,8 @@ with tab_backtest:
                 use_em_filter = ovr.get("em_filter", _BASE["em_filter"])
                 max_trades_per_week = ovr.get("max_wk", _BASE["max_wk"])
                 effective_cost = ovr.get("cost", _BASE["cost"])
+                # VIX-SIZING: הסכמה נקבעת כאן, יחד עם שאר הדריסות.
+                globals()["_VIX_SIZING"] = ovr.get("vix_size", _BASE.get("vix_size", "off"))
                 # AUDIT-EVERY-RUN: הערך נדרס כאן. הפלט חייב לדווח את מה
                 # שהמנוע קיבל בפועל, והמבדק חייב לרוץ בכל תצורה.
                 try:
@@ -5909,6 +5950,8 @@ with tab_backtest:
                         use_em_filter = ovr.get("em_filter", _BASE["em_filter"])
                         max_trades_per_week = ovr.get("max_wk", _BASE["max_wk"])
                         effective_cost = ovr.get("cost", _BASE["cost"])
+                        # VIX-SIZING: הסכמה נקבעת כאן, יחד עם שאר הדריסות.
+                        globals()["_VIX_SIZING"] = ovr.get("vix_size", _BASE.get("vix_size", "off"))
                         # AUDIT-EVERY-RUN: הערך נדרס כאן. הפלט חייב לדווח את מה
                         # שהמנוע קיבל בפועל, והמבדק חייב לרוץ בכל תצורה.
                         try:
