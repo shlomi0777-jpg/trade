@@ -1106,7 +1106,7 @@ STOP_LADDER_MID = [(8.0, 0.0), (12.0, 4.0), (18.0, 10.0),
 
 # ===== זהות הגרסה =====
 # תווית קריאה במקום MD5. מתעדכנת בכל כתיבה.
-APP_VERSION = "v066 · 21/08/2026 12:32"
+APP_VERSION = "v067 · 21/08/2026 12:53"
 _AUDIT_DONE = {}
 
 # VIX-SIZING: גודל חשיפה לפי VIX.
@@ -1117,11 +1117,23 @@ _VIX_MAP = None          # {date -> vix}
 _VIX_EXPOSURE = []       # מקדמים בפועל, לדיווח
 
 
+def _vix_key(d):
+    """VIX-KEY: תאריך נקי. מקורות שונים מגיעים עם אזור זמן
+    ושעה שונים, ולכן השוואה ישירה של חותמות נכשלת בשקט."""
+    try:
+        t = pd.Timestamp(d)
+        if t.tz is not None:
+            t = t.tz_localize(None)
+        return t.normalize()
+    except Exception:
+        return None
+
+
 def _vix_weight(d):
     """מקדם לגודל הפוזיציה ביום d. 1.0 = ללא שינוי."""
     if _VIX_SIZING != "tiered" or not _VIX_MAP:
         return 1.0
-    v = _VIX_MAP.get(d)
+    v = _VIX_MAP.get(_vix_key(d))
     if v is None or not np.isfinite(v):
         return 1.0
     if v < 15:  return 0.5
@@ -1621,7 +1633,10 @@ def build_text_report(label, cfg, sm, bm, trades, pts, blocked, failed):
             A(f"  שיא פוזיציות במקביל: {_mc}")
             if _VIX_EXPOSURE:
                 _av = sum(_VIX_EXPOSURE) / len(_VIX_EXPOSURE)
+                _nm = len(_VIX_MAP) if _VIX_MAP else 0
+                _hit = sum(1 for _x in _VIX_EXPOSURE if _x != 1.0)
                 A(f"  מקדם חשיפה ממוצע: {_av:.2f}  (1.00 = ללא שינוי)")
+                A(f"  סכמה: {_VIX_SIZING} · ימי VIX במפה: {_nm} · הקצאות שהושפעו: {_hit}/{len(_VIX_EXPOSURE)}")
         A(f"  SHARPE: {sh:.2f}" if sh else "  SHARPE: n/a")
         A(f"  CALMAR: {ca:.2f}" if ca else "  CALMAR: n/a")
     rs={}
@@ -3206,8 +3221,15 @@ def run_aggregate(tickers, earnings_mode, bt_period, bt_threshold, bt_max_days,
     # VIX-SIZING: נשלף בנפרד לצורך גודל חשיפה, ללא תלות בפילטר.
     try:
         _vx = vix_series if vix_series is not None else fetch_vix_history(bt_period)
-        globals()["_VIX_MAP"] = {d: float(v) for d, v in _vx.items()
-                                 if np.isfinite(v)} if _vx is not None else None
+        if _vx is not None:
+            _mp = {}
+            for _d, _v in _vx.items():
+                _k = _vix_key(_d)
+                if _k is not None and np.isfinite(_v):
+                    _mp[_k] = float(_v)
+            globals()["_VIX_MAP"] = _mp or None
+        else:
+            globals()["_VIX_MAP"] = None
     except Exception:
         globals()["_VIX_MAP"] = None
     spy_series = fetch_spy_history(bt_period) if macro_exit_mode != "off" else None
