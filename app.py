@@ -1106,7 +1106,7 @@ STOP_LADDER_MID = [(8.0, 0.0), (12.0, 4.0), (18.0, 10.0),
 
 # ===== זהות הגרסה =====
 # תווית קריאה במקום MD5. מתעדכנת בכל כתיבה.
-APP_VERSION = "v068 · 21/08/2026 13:08"
+APP_VERSION = "v069 · 21/08/2026 15:00"
 _AUDIT_DONE = {}
 
 # VIX-SIZING: גודל חשיפה לפי VIX.
@@ -2494,7 +2494,7 @@ def run_backtest_single(df, ticker="", score_threshold=70, max_holding_days=30,
                          ladder_mode="off",
                          scale_first=0.5,
                          vol_norm_scope="thr",
-                         use_cooldown=True,
+                         use_cooldown=False,
                          blocked_out=None):
 
     """
@@ -3226,7 +3226,7 @@ def run_aggregate(tickers, earnings_mode, bt_period, bt_threshold, bt_max_days,
                    ladder_mode="off",
                    scale_first=0.5,
                    vol_norm_scope="thr",
-                   use_cooldown=True,
+                   use_cooldown=False,
                    max_trades_per_week=0):
     _AUDIT_DONE.clear()
     all_trades, per_ticker_stats, failed = [], [], []
@@ -5104,7 +5104,7 @@ with tab_backtest:
         "vb2":           DEFAULTS["vb2"],
         "vb3":           DEFAULTS["vb3"],
         # מתגי בדיקה שאין להם מקבילה ב-DEFAULTS — כבויים
-        "cost": 0.05, "vix_size": "off", "cool_mode": "current", "use_reversal": False, "weekly": False, "three_day": False,
+        "cost": 0.05, "vix_size": "off", "cool_mode": "off",  # COOLDOWN-OFF: נמדד כמזיק בבדיקה 47 "use_reversal": False, "weekly": False, "three_day": False,
         "em_filter": False, "max_wk": 0,
         "vix": "ignore", "rev": "sma20", "entry": "close", "macro": "off",
     }
