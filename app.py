@@ -1080,7 +1080,7 @@ DEFAULTS = {
     "earnings_mode": "combined",     # יציאה יזומה לפני דוח + חזרה אחריו
     "entry_buffer_days": 2,          # לא נכנסים אם דוח בתוך יומיים
     "exit_buffer_days": 1,           # יוצאים מפוזיציה קיימת יום לפני דוח
-    "exit_style": "fixed",           # TP קבוע 2.5x הסיכון
+    "exit_style": "trailing",           # TP קבוע 2.5x הסיכון
     "use_composite": False,  # נמצא מזיק בבדיקה 02 (2.28 כבוי מול 2.06 דלוק)           # ציון מורכב (בלי מכפיל הסטופ שהוסר)
     "directional_vol": False,  # נמצא מזיק בבדיקה 03 (2.41 רגיל מול 2.28 מכוון)         # נפח חריג נספר שלילית ביום ירידה
     "overext_threshold": 8.0,
@@ -1114,7 +1114,7 @@ STOP_LADDER_MID = [(8.0, 0.0), (12.0, 4.0), (18.0, 10.0),
 
 # ===== זהות הגרסה =====
 # תווית קריאה במקום MD5. מתעדכנת בכל כתיבה.
-APP_VERSION = "v079 · 22/08/2026 22:51"
+APP_VERSION = "v080 · 22/08/2026 23:08"
 _AUDIT_DONE = {}
 
 # VIX-SIZING: גודל חשיפה לפי VIX.
@@ -5150,7 +5150,7 @@ with tab_backtest:
     # כשער כניסה מתבטל.
     "trigger":       "three_red",
         "brk_lb":        20,       # חלון פריצת התנגדות
-        "part_r":        0.0,      # מימוש חלקי ביעד R (0 = כבוי)
+        "part_r": 2.0,      # מימוש חלקי ביעד R (0 = כבוי)
         "part_be":       False,    # סטופ לנקודת כניסה אחרי מימוש
         "dip_pct":       10.0,     # ירידה מהשיא לטריגר התכנסות
         "scale":         "off",   # חיזוק פוזיציה: off/split/add
@@ -5723,7 +5723,7 @@ with tab_backtest:
              "cost": effective_cost, "threshold": bt_threshold, "max_days": bt_max_days,
              "vol_norm": use_vol_norm, "vb1": vb1, "vb2": vb2, "vb3": vb3,
              "rising_sma": False, "trigger": "score", "brk_lb": 20,
-             "part_r": 0.0, "part_be": False, "dip_pct": 10.0,
+             "part_r": 2.0, "part_be": False, "dip_pct": 10.0,
              "scale": "off", "scale_drop": 5.0, "ladder": "off",
              "scale_first": 0.5, "vn_scope": "thr", "cooldown": True,
              "max_pos": 0}
@@ -5762,9 +5762,9 @@ with tab_backtest:
                              value=False, key="bt_use_range")
     if _use_range:
         _c1, _c2 = st.columns(2)
-        _s = _c1.date_input("מתאריך", value=_dt.date(2023, 1, 1),
+        _s = _c1.date_input("מתאריך", value=_dt.date(2022, 1, 1),
                             key="bt_start")
-        _e = _c2.date_input("עד תאריך", value=_dt.date.today(),
+        _e = _c2.date_input("עד תאריך", value=_dt.date(2023, 12, 31),
                             key="bt_end")
         if _s and _e and _s < _e:
             bt_period = f"{_s}:{_e}"
@@ -5964,7 +5964,13 @@ with tab_backtest:
     elif bt_mode == "📊 קטגוריה שלמה (אגרגטיבי)":
         _cat_keys = list(CATEGORIES.keys())
         _def_cat = _cat_keys.index("💰 יקום סחיר (159)") if "💰 יקום סחיר (159)" in _cat_keys else 0
-        bt_cat = st.selectbox("בחר קטגוריה לבקטסט אגרגטיבי:", list(CATEGORIES.keys()), index=_def_cat, key="bt_cat")
+        # STANDING-DEFAULTS: היקום הנקי כברירת מחדל.
+        # לפי שם ולא לפי אינדקס — אינדקס נשבר כשמוסיפים
+        # קטגוריה, וזה שקט ומסוכן.
+        _keys = list(CATEGORIES.keys())
+        _def_cat = next((i for i, k in enumerate(_keys)
+                         if "יקום 2023 · נקי" in k), _def_cat)
+        bt_cat = st.selectbox("בחר קטגוריה לבקטסט אגרגטיבי:", _keys, index=_def_cat, key="bt_cat")
         cat_tickers = CATEGORIES[bt_cat]
         st.caption(f"יורצו {len(cat_tickers)} מניות, הטריידים מכולן יאוחדו למדגם סטטיסטי אחד.")
         bt_position_pct = st.number_input("הקצאת הון לכל פוזיציה (% מהתיק):", min_value=1, max_value=20, value=5, step=1)
