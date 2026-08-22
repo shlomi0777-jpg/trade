@@ -1110,7 +1110,7 @@ STOP_LADDER_MID = [(8.0, 0.0), (12.0, 4.0), (18.0, 10.0),
 
 # ===== זהות הגרסה =====
 # תווית קריאה במקום MD5. מתעדכנת בכל כתיבה.
-APP_VERSION = "v073 · 22/08/2026 13:36"
+APP_VERSION = "v074 · 22/08/2026 15:46"
 _AUDIT_DONE = {}
 
 # VIX-SIZING: גודל חשיפה לפי VIX.
@@ -2728,6 +2728,13 @@ def run_backtest_single(df, ticker="", score_threshold=70, max_holding_days=30,
                 _peak = _A["res20"][i]
                 _trigger = ((not np.isnan(_peak)) and _peak > 0 and
                             (_peak - closes[i]) / _peak * 100 >= dip_pct)
+            elif entry_trigger == "mom120":
+                # MOM120: תנאי יחיד — המניה עלתה ב-120 ימי מסחר.
+                # הפיצ׳ר היחיד ששרד סריקה של 82 עם סימן אחיד
+                # בכל חמש תת-התקופות, ומתחזק דווקא ב-2024-26.
+                _j = i - 120
+                _trigger = (_j >= 0 and closes[_j] > 0
+                            and closes[i] > closes[_j])
             else:
                 _trigger = _score_ok
             # ===== זיכרון =====
@@ -5191,6 +5198,14 @@ with tab_backtest:
             ("7 +\u05e7\u05d9\u05d3\u05d5\u05dd \u05de\u05d1\u05e0\u05d9", {"dir_vol": False, "block_overext": False, "threshold": 55, "max_days": 20, "weekly": True, "use_reversal": True, "rev": "both", "exit": "structural_trail"}),
         ],
         # EXIT-SUITE: הזנב הימני נחתך. איזה כלל אחראי?
+        # MOM120: הכניסה הנוכחית נמדדה כמזיקה. זו החלופה.
+        "50 כניסה: ציון מול מומנטום": [
+            ("ציון (הנוכחי)", {}),
+            ("מומנטום 120", {"trigger": "mom120"}),
+            ("מומנטום 120 · בלי חסימת מתיחה",
+             {"trigger": "mom120", "block_overext": False}),
+            ("ציון · בלי חסימת מתיחה", {"block_overext": False}),
+        ],
         "49 כיול רוחב טריילינג": [
             ("TP קבוע (בסיס)", {"exit": "fixed"}),
             ("trailing 1.5", {"exit": "trailing", "trail": 1.5}),
