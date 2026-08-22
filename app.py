@@ -1110,7 +1110,7 @@ STOP_LADDER_MID = [(8.0, 0.0), (12.0, 4.0), (18.0, 10.0),
 
 # ===== זהות הגרסה =====
 # תווית קריאה במקום MD5. מתעדכנת בכל כתיבה.
-APP_VERSION = "v070 · 22/08/2026 12:25"
+APP_VERSION = "v071 · 22/08/2026 12:44"
 _AUDIT_DONE = {}
 
 # VIX-SIZING: גודל חשיפה לפי VIX.
@@ -1690,6 +1690,44 @@ def build_text_report(label, cfg, sm, bm, trades, pts, blocked, failed):
         kt="\u05d8\u05d9\u05e7\u05e8"; kn="\u05d8\u05e8\u05d9\u05d9\u05d3\u05d9\u05dd"
         kw="\u05d4\u05e6\u05dc\u05d7\u05d4 %"
         p=sorted(pts,key=lambda x:x[kr],reverse=True)
+        # VS-BUYHOLD: האם ההפסד מגיע מבחירה או מניהול?
+        try:
+            if price_map:
+                _by = {}
+                for _t in trades:
+                    _by.setdefault(_t["ticker"], []).append(_t["return_pct"])
+                _rows = []
+                for _tk, _rs in _by.items():
+                    _s = price_map.get(_tk)
+                    if _s is None or len(_s) < 2:
+                        continue
+                    _bh = (float(_s.iloc[-1]) / float(_s.iloc[0]) - 1) * 100
+                    _ours = float(np.sum(_rs))
+                    _rows.append((_tk, _ours, _bh, _ours - _bh, len(_rs)))
+                if _rows:
+                    _win = [r for r in _rows if r[3] > 0]
+                    A("--- STRATEGY vs BUY&HOLD ---")
+                    A(f"  ניצחנו ב-{len(_win)} מתוך {len(_rows)} מניות ({len(_win)/len(_rows)*100:.0f}%)")
+                    _md = float(np.median([r[3] for r in _rows]))
+                    _mn = float(np.mean([r[3] for r in _rows]))
+                    A(f"  הפרש חציוני: {_md:+.1f} נק׳ · ממוצע: {_mn:+.1f} נק׳")
+                    _rows.sort(key=lambda r: r[3])
+                    A("  חמש הגרועות (הפסדנו הכי הרבה מול החזקה):")
+                    for _tk, _o, _b, _d, _n in _rows[:5]:
+                        A(f"     {_tk:6} שלנו {_o:+7.1f}%  החזקה {_b:+7.1f}%  פער {_d:+7.1f}  ({_n} טר׳)")
+                    A("  חמש הטובות:")
+                    for _tk, _o, _b, _d, _n in _rows[-5:][::-1]:
+                        A(f"     {_tk:6} שלנו {_o:+7.1f}%  החזקה {_b:+7.1f}%  פער {_d:+7.1f}  ({_n} טר׳)")
+                    # פילוח לפי כיוון המניה: האם אנחנו טובים דווקא
+                    # במניות יורדות (הגנה) וגרועים בעולות (זנב ימני)?
+                    _up = [r for r in _rows if r[2] > 20]
+                    _dn = [r for r in _rows if r[2] < -20]
+                    if _up:
+                        A(f"  במניות שעלו >20%: ניצחנו ב-{sum(1 for r in _up if r[3]>0)}/{len(_up)} · פער חציוני {float(np.median([r[3] for r in _up])):+.1f}")
+                    if _dn:
+                        A(f"  במניות שירדו >20%: ניצחנו ב-{sum(1 for r in _dn if r[3]>0)}/{len(_dn)} · פער חציוני {float(np.median([r[3] for r in _dn])):+.1f}")
+        except Exception as _e:
+            A(f"  ⚠️ vs-buyhold נכשל: {_e}")
         A("--- PER TICKER ---")
         for r in p[:5]: A(f"  + {r[kt]}: {r[kr]:+.1f}% ({r[kn]} tr, {r[kw]:.0f}% win)")
         if len(p)>5:
