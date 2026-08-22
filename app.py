@@ -1110,7 +1110,7 @@ STOP_LADDER_MID = [(8.0, 0.0), (12.0, 4.0), (18.0, 10.0),
 
 # ===== זהות הגרסה =====
 # תווית קריאה במקום MD5. מתעדכנת בכל כתיבה.
-APP_VERSION = "v072 · 22/08/2026 13:22"
+APP_VERSION = "v073 · 22/08/2026 13:36"
 _AUDIT_DONE = {}
 
 # VIX-SIZING: גודל חשיפה לפי VIX.
@@ -5146,7 +5146,9 @@ with tab_backtest:
         "vb2":           DEFAULTS["vb2"],
         "vb3":           DEFAULTS["vb3"],
         # מתגי בדיקה שאין להם מקבילה ב-DEFAULTS — כבויים
-        "cost": 0.05, "vix_size": "off", "cool_mode": "off",  # COOLDOWN-OFF: נמדד כמזיק בבדיקה 47 "use_reversal": False, "weekly": False, "three_day": False,
+        "cost": 0.05, "vix_size": "off", "cool_mode": "off",
+        # TRAIL-CAL: רוחב הטריילינג לא זרם מהחבילה עד כה.
+        "trail": 2.0,  # COOLDOWN-OFF: נמדד כמזיק בבדיקה 47 "use_reversal": False, "weekly": False, "three_day": False,
         "em_filter": False, "max_wk": 0,
         "vix": "ignore", "rev": "sma20", "entry": "close", "macro": "off",
     }
@@ -5189,6 +5191,13 @@ with tab_backtest:
             ("7 +\u05e7\u05d9\u05d3\u05d5\u05dd \u05de\u05d1\u05e0\u05d9", {"dir_vol": False, "block_overext": False, "threshold": 55, "max_days": 20, "weekly": True, "use_reversal": True, "rev": "both", "exit": "structural_trail"}),
         ],
         # EXIT-SUITE: הזנב הימני נחתך. איזה כלל אחראי?
+        "49 כיול רוחב טריילינג": [
+            ("TP קבוע (בסיס)", {"exit": "fixed"}),
+            ("trailing 1.5", {"exit": "trailing", "trail": 1.5}),
+            ("trailing 2.0", {"exit": "trailing", "trail": 2.0}),
+            ("trailing 3.0", {"exit": "trailing", "trail": 3.0}),
+            ("trailing 4.0", {"exit": "trailing", "trail": 4.0}),
+        ],
         "48 ניהול יציאה": [
             ("בסיס נוכחי", {}),
             ("trailing במקום TP", {"exit": "trailing"}),
@@ -5738,6 +5747,7 @@ with tab_backtest:
                         use_em_filter = ovr.get("em_filter", _BASE["em_filter"])
                         max_trades_per_week = ovr.get("max_wk", _BASE["max_wk"])
                         effective_cost = ovr.get("cost", _BASE["cost"])
+                        _eff_trail = float(ovr.get("trail", _BASE.get("trail", 2.0)))
                         # VIX-SIZING: הסכמה נקבעת כאן, יחד עם שאר הדריסות.
                         globals()["_VIX_SIZING"] = ovr.get("vix_size", _BASE.get("vix_size", "off"))
                         globals()["_COOL_MODE"] = ovr.get("cool_mode", _BASE.get("cool_mode", "current"))
@@ -5773,7 +5783,7 @@ with tab_backtest:
                         trades, err = run_backtest_single(df, bt_ticker, bt_threshold, bt_max_days,
                                                            earnings_mode=mode_code, earnings_dates=earnings_dates,
                                                            entry_buffer_days=entry_buffer_days, exit_buffer_days=exit_buffer_days,
-                                                           exit_style=exit_code, trailing_width_mult=trailing_width_mult,
+                                                           exit_style=exit_code, trailing_width_mult=_eff_trail,
                                                            overext_threshold=overext_threshold, block_overextended=block_overextended,
                                                            stop_style=stop_code, structural_lookback=structural_lookback,
                                                            structural_buffer_pct=structural_buffer_pct,
@@ -5908,6 +5918,7 @@ with tab_backtest:
                 use_em_filter = ovr.get("em_filter", _BASE["em_filter"])
                 max_trades_per_week = ovr.get("max_wk", _BASE["max_wk"])
                 effective_cost = ovr.get("cost", _BASE["cost"])
+                _eff_trail = float(ovr.get("trail", _BASE.get("trail", 2.0)))
                 # VIX-SIZING: הסכמה נקבעת כאן, יחד עם שאר הדריסות.
                 globals()["_VIX_SIZING"] = ovr.get("vix_size", _BASE.get("vix_size", "off"))
                 globals()["_COOL_MODE"] = ovr.get("cool_mode", _BASE.get("cool_mode", "current"))
@@ -5942,7 +5953,7 @@ with tab_backtest:
                 vb3 = ovr.get("vb3", _BASE["vb3"])
                 all_trades, per_ticker_stats, failed, benchmarks, price_map = run_aggregate(cat_tickers, mode_code, bt_period, bt_threshold,
                                                                       bt_max_days, entry_buffer_days, exit_buffer_days, f"{combined_label}: ",
-                                                                      exit_style=exit_code, trailing_width_mult=trailing_width_mult,
+                                                                      exit_style=exit_code, trailing_width_mult=_eff_trail,
                                                                       overext_threshold=overext_threshold, block_overextended=block_overextended,
                                                                       stop_style=stop_code, structural_lookback=structural_lookback,
                                                                       structural_buffer_pct=structural_buffer_pct,
@@ -6047,6 +6058,7 @@ with tab_backtest:
                         use_em_filter = ovr.get("em_filter", _BASE["em_filter"])
                         max_trades_per_week = ovr.get("max_wk", _BASE["max_wk"])
                         effective_cost = ovr.get("cost", _BASE["cost"])
+                        _eff_trail = float(ovr.get("trail", _BASE.get("trail", 2.0)))
                         # VIX-SIZING: הסכמה נקבעת כאן, יחד עם שאר הדריסות.
                         globals()["_VIX_SIZING"] = ovr.get("vix_size", _BASE.get("vix_size", "off"))
                         globals()["_COOL_MODE"] = ovr.get("cool_mode", _BASE.get("cool_mode", "current"))
@@ -6082,7 +6094,7 @@ with tab_backtest:
                         all_trades, per_ticker_stats, failed, benchmarks, price_map = run_aggregate(
                             cat_tickers_multi, mode_code, bt_period, bt_threshold, bt_max_days,
                             entry_buffer_days, exit_buffer_days, f"{cat_name} | {combined_label}: ",
-                            exit_style=exit_code, trailing_width_mult=trailing_width_mult,
+                            exit_style=exit_code, trailing_width_mult=_eff_trail,
                             overext_threshold=overext_threshold, block_overextended=block_overextended,
                             stop_style=stop_code, structural_lookback=structural_lookback,
                             structural_buffer_pct=structural_buffer_pct,
