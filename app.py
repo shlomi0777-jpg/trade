@@ -1110,7 +1110,7 @@ STOP_LADDER_MID = [(8.0, 0.0), (12.0, 4.0), (18.0, 10.0),
 
 # ===== זהות הגרסה =====
 # תווית קריאה במקום MD5. מתעדכנת בכל כתיבה.
-APP_VERSION = "v071 · 22/08/2026 12:44"
+APP_VERSION = "v072 · 22/08/2026 13:22"
 _AUDIT_DONE = {}
 
 # VIX-SIZING: גודל חשיפה לפי VIX.
@@ -5187,6 +5187,15 @@ with tab_backtest:
             ("5 +\u05e9\u05d1\u05d5\u05e2\u05d9", {"dir_vol": False, "block_overext": False, "threshold": 55, "max_days": 20, "weekly": True}),
             ("6 +\u05d4\u05d9\u05e4\u05d5\u05da", {"dir_vol": False, "block_overext": False, "threshold": 55, "max_days": 20, "weekly": True, "use_reversal": True, "rev": "both"}),
             ("7 +\u05e7\u05d9\u05d3\u05d5\u05dd \u05de\u05d1\u05e0\u05d9", {"dir_vol": False, "block_overext": False, "threshold": 55, "max_days": 20, "weekly": True, "use_reversal": True, "rev": "both", "exit": "structural_trail"}),
+        ],
+        # EXIT-SUITE: הזנב הימני נחתך. איזה כלל אחראי?
+        "48 ניהול יציאה": [
+            ("בסיס נוכחי", {}),
+            ("trailing במקום TP", {"exit": "trailing"}),
+            ("אופק 90 יום", {"max_days": 90}),
+            ("בלי יציאת דוחות", {"earn": "entry_block"}),
+            ("שלושתם יחד", {"exit": "trailing", "max_days": 90,
+                            "earn": "entry_block"}),
         ],
         "47 מדיניות המתנה": [
             ("כבוי", {"cooldown": False}),
