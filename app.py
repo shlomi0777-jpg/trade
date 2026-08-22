@@ -873,6 +873,10 @@ try:
     _pi = next((i for i, k in enumerate(_ks) if "התיק האישי" in k), 0) + 1
     _ks.insert(_pi, _WLK)
     CATEGORIES = {k: CATEGORIES[k] for k in _ks}
+    # PRICE-SANITY: יקום 2023 בלי מניות עם נתוני מחיר
+    # פגומים. BYND הוסרה — פיצול הפוך 1:30 עם התאמה
+    # שבורה שייצרה +2,472% מזויפים בחמישה טריידים.
+    CATEGORIES["🧼 יקום 2023 · נקי (219)"] = ["AA", "AAPL", "ABNB", "ACN", "ADBE", "ADI", "ADM", "AFRM", "AI", "AIG", "ALB", "AMAT", "AMC", "AMD", "AMT", "AMZN", "ARKK", "ASML", "AVGO", "AXP", "BA", "BAC", "BBBY", "BE", "BG", "BIIB", "BKNG", "BLDP", "BLK", "BNO", "C", "CAT", "CCJ", "CCL", "CDNS", "CF", "CHWY", "CLF", "CMG", "COIN", "COP", "COST", "CRM", "CRWD", "CVNA", "CVX", "CZR", "DAL", "DASH", "DDOG", "DE", "DHR", "DIS", "DKNG", "DLR", "DOCU", "DXCM", "EBAY", "ECL", "ENPH", "ENTG", "EOG", "EQIX", "ESTC", "ETSY", "F", "FCEL", "FCX", "FDX", "FSLR", "FTNT", "GE", "GM", "GME", "GOOGL", "GTLB", "HAL", "HD", "HLT", "HOOD", "HUBS", "HUT", "ICLN", "INTC", "INTU", "IONQ", "IRDM", "ISRG", "JOBY", "KLAC", "LCID", "LHX", "LOW", "LRCX", "LULU", "LUV", "LVS", "LYFT", "MA", "MAR", "MARA", "MDB", "META", "MGM", "MLM", "MNDY", "MOS", "MP", "MPC", "MRNA", "MRVL", "MS", "MSFT", "MSTR", "MU", "NCLH", "NEE", "NEM", "NET", "NFLX", "NKE", "NOC", "NOW", "NTR", "NUE", "NVDA", "NVO", "NXPI", "OKTA", "ON", "OPEN", "ORCL", "OXY", "PANW", "PATH", "PENN", "PH", "PINS", "PLD", "PLTR", "PLUG", "PSX", "PTON", "PWR", "PYPL", "QCOM", "QLYS", "RCL", "REGN", "RIOT", "RIVN", "RKLB", "RMBS", "ROK", "ROKU", "RPD", "RUN", "S", "SAP", "SBUX", "SCCO", "SCHW", "SEDG", "SHOP", "SLB", "SLV", "SMH", "SNAP", "SNOW", "SNPS", "SOFI", "SOXX", "SPCE", "SPG", "SPGI", "SPOT", "STX", "SYK", "TAN", "TDOC", "TEAM", "TENB", "TER", "TGT", "TJX", "TMO", "TSLA", "TSM", "TT", "TWLO", "TXN", "TXT", "UAL", "UBER", "UEC", "UNG", "UPS", "UPST", "URA", "URI", "USO", "V", "VEEV", "VMC", "VRNS", "VRTX", "VST", "VTRS", "W", "WBD", "WDAY", "WDC", "WFC", "XLE", "XOM", "XYL", "ZM", "ZS", "ZTS"]
     # PIT-UNIVERSE: יקום שנבחר נכון ל-1.1.2023 בלבד —
     # מחזור ותנודתיות מ-12 החודשים שקדמו, בלי מידע מאוחר.
     # נועד למדוד כמה מקו הבסיס נובע מהטיית בחירה.
@@ -1110,7 +1114,7 @@ STOP_LADDER_MID = [(8.0, 0.0), (12.0, 4.0), (18.0, 10.0),
 
 # ===== זהות הגרסה =====
 # תווית קריאה במקום MD5. מתעדכנת בכל כתיבה.
-APP_VERSION = "v074 · 22/08/2026 15:46"
+APP_VERSION = "v075 · 22/08/2026 16:08"
 _AUDIT_DONE = {}
 
 # VIX-SIZING: גודל חשיפה לפי VIX.
@@ -1574,6 +1578,10 @@ def build_text_report(label, cfg, sm, bm, trades, pts, blocked, failed):
             elif str(_t.get("exit_date","")) < str(_t.get("entry_date","")): _bad.append(("יציאה לפני כניסה", _t))
             elif not _t.get("sector"):           _bad.append(("סקטור ריק", _t))
             elif not _t.get("entry_score"):      _bad.append(("ציון כניסה 0", _t))
+            # PRICE-SANITY: תשואה מעל 100% בטרייד בודד היא
+            # כמעט תמיד פיצול עם התאמה שבורה. BYND הראתה
+            # תנועות של 2900% שעברו בשקט.
+            elif abs(float(_r)) > 100:           _bad.append(("תשואה בלתי אפשרית", _t))
         A("--- SANITY ---")
         # SCORE-BUCKETS: האם הציון בכניסה מנבא תוצאה?
         _sc = [t for t in trades if t.get("entry_score")]
