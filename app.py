@@ -1114,7 +1114,7 @@ STOP_LADDER_MID = [(8.0, 0.0), (12.0, 4.0), (18.0, 10.0),
 
 # ===== זהות הגרסה =====
 # תווית קריאה במקום MD5. מתעדכנת בכל כתיבה.
-APP_VERSION = "v076 · 22/08/2026 16:50"
+APP_VERSION = "v077 · 22/08/2026 17:02"
 _AUDIT_DONE = {}
 
 # VIX-SIZING: גודל חשיפה לפי VIX.
@@ -2536,7 +2536,7 @@ def run_backtest_single(df, ticker="", score_threshold=70, max_holding_days=30,
                          macro_confirm_days=2, macro_dd_pct=8.0,
                          use_vol_norm=False, vb1=3.0, vb2=4.5, vb3=6.5,
                          require_rising_sma=False, sma_slope_min=0.0,
-                         entry_trigger="score", red_days=3,
+                         entry_trigger="three_red", red_days=3,
                          breakout_lookback=20,
                          partial_r=0.0, partial_be=False,
                          dip_pct=10.0,
@@ -3275,7 +3275,7 @@ def run_aggregate(tickers, earnings_mode, bt_period, bt_threshold, bt_max_days,
                    macro_confirm_days=2, macro_dd_pct=8.0,
                    use_vol_norm=False, vb1=3.0, vb2=4.5, vb3=6.5,
                    require_rising_sma=False, sma_slope_min=0.0,
-                   entry_trigger="score", red_days=3,
+                   entry_trigger="three_red", red_days=3,
                    breakout_lookback=20,
                    partial_r=0.0, partial_be=False,
                    dip_pct=10.0,
@@ -5145,7 +5145,10 @@ with tab_backtest:
         "max_days":      DEFAULTS["max_holding_days"],
         "vol_norm":      DEFAULTS["use_vol_norm"],
         "rising_sma":    False,   # שיפוע SMA150 - כבוי בקו הבסיס
-        "trigger":       "score",  # טריגר הכניסה
+        # THREE-RED-DEFAULT: נמדד ראשון בשני החלונות ובכל מדד
+    # (בדיקה 51). הציון נשאר מחושב ומוצג — רק תפקידו
+    # כשער כניסה מתבטל.
+    "trigger":       "three_red",
         "brk_lb":        20,       # חלון פריצת התנגדות
         "part_r":        0.0,      # מימוש חלקי ביעד R (0 = כבוי)
         "part_be":       False,    # סטופ לנקודת כניסה אחרי מימוש
@@ -5210,6 +5213,12 @@ with tab_backtest:
         # SHOWDOWN: כל הטריגרים תחת אותה תצורה בדיוק —
         # רק "trigger" משתנה. עד כה כל אחד נמדד באופק אחר,
         # ולכן הדירוג ביניהם לא היה תקף.
+        "52 כיול אורך הרצף האדום": [
+            ("2 ימים", {"red_days": 2}),
+            ("3 ימים (הנוכחי)", {"red_days": 3}),
+            ("4 ימים", {"red_days": 4}),
+            ("5 ימים", {"red_days": 5}),
+        ],
         "51 כל הטריגרים · תצורה זהה": [
             ("ציון (הנוכחי)", {}),
             ("3 ימים אדומים", {"trigger": "three_red"}),
