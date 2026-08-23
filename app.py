@@ -5341,9 +5341,9 @@ with tab_backtest:
             ("5 ימים", {"red_days": 5}),
         ],
         "60 · ללא מגבלת הון": [
-            ("מומנטום 120", {"trigger": "mom120", "pos_pct": 1}),
-            ("3 ימים אדומים", {"trigger": "three_red", "pos_pct": 1}),
-            ("ציון", {"trigger": "score", "pos_pct": 1}),
+            ("מומנטום 120", {"trigger": "mom120", "pos_pct": 0.25}),
+            ("3 ימים אדומים", {"trigger": "three_red", "pos_pct": 0.25}),
+            ("ציון", {"trigger": "score", "pos_pct": 0.25}),
         ],
         "59 מבחן הון · חשיפה מלאה": [
             ("מומנטום · 5%", {"trigger": "mom120"}),
