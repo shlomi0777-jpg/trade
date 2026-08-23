@@ -1114,7 +1114,7 @@ STOP_LADDER_MID = [(8.0, 0.0), (12.0, 4.0), (18.0, 10.0),
 
 # ===== זהות הגרסה =====
 # תווית קריאה במקום MD5. מתעדכנת בכל כתיבה.
-APP_VERSION = "v080 · 22/08/2026 23:08"
+APP_VERSION = "v081 · 23/08/2026 10:05"
 _AUDIT_DONE = {}
 
 # VIX-SIZING: גודל חשיפה לפי VIX.
@@ -1125,6 +1125,13 @@ _VIX_SIZING = "off"
 # COOL-MODE: מדיניות ההמתנה אחרי יציאה, ניתנת לכיול.
 # ההשערה: המתנה מוצדקת אחרי כישלון (סטופ), לא אחרי
 # יציאה מתוכננת כמו לפני-דוח או סוף האופק.
+# SECTOR-CAP: סקטורים אמיתיים מ-yfinance.
+# STOCK_INFO מכיל תת-ענף מדויק (128 ערכים ל-159
+# מניות) ולכן ממוצע סקטור עליו הוא ממוצע של מניה
+# אחת. 386 טריידים יצאו עם סקטור ריק.
+SECTOR_MAP = {"AA": "Basic Materials", "AAPL": "Technology", "ABNB": "Consumer Cyclical", "ACN": "Technology", "ADBE": "Technology", "ADI": "Technology", "ADM": "Consumer Defensive", "AFRM": "Financial Services", "AI": "Technology", "AIG": "Financial Services", "ALB": "Basic Materials", "AMAT": "Technology", "AMC": "Communication Services", "AMD": "Technology", "AMT": "Real Estate", "AMZN": "Consumer Cyclical", "ARKK": "ETF", "ASML": "Technology", "AVGO": "Technology", "AXP": "Financial Services", "BA": "Industrials", "BAC": "Financial Services", "BBBY": "Unknown", "BE": "Industrials", "BG": "Consumer Defensive", "BIIB": "Healthcare", "BKNG": "Consumer Cyclical", "BLDP": "Industrials", "BLK": "Financial Services", "BNO": "ETF", "C": "Financial Services", "CAT": "Industrials", "CCJ": "Energy", "CCL": "Consumer Cyclical", "CDNS": "Technology", "CF": "Basic Materials", "CHWY": "Consumer Cyclical", "CLF": "Basic Materials", "CMG": "Consumer Cyclical", "COIN": "Financial Services", "COP": "Energy", "COST": "Consumer Defensive", "CRM": "Technology", "CRWD": "Technology", "CVNA": "Consumer Cyclical", "CVX": "Energy", "CZR": "Consumer Cyclical", "DAL": "Industrials", "DASH": "Consumer Cyclical", "DDOG": "Technology", "DE": "Industrials", "DHR": "Healthcare", "DIS": "Communication Services", "DKNG": "Consumer Cyclical", "DLR": "Real Estate", "DOCU": "Technology", "DXCM": "Healthcare", "EBAY": "Consumer Cyclical", "ECL": "Basic Materials", "ENPH": "Technology", "ENTG": "Technology", "EOG": "Energy", "EQIX": "Real Estate", "ESTC": "Technology", "ETSY": "Consumer Cyclical", "F": "Consumer Cyclical", "FCEL": "Industrials", "FCX": "Basic Materials", "FDX": "Industrials", "FSLR": "Technology", "FTNT": "Technology", "GE": "Industrials", "GM": "Consumer Cyclical", "GME": "Consumer Cyclical", "GOOGL": "Communication Services", "GTLB": "Technology", "HAL": "Energy", "HD": "Consumer Cyclical", "HLT": "Consumer Cyclical", "HOOD": "Financial Services", "HUBS": "Technology", "HUT": "Financial Services", "ICLN": "ETF", "INTC": "Technology", "INTU": "Technology", "IONQ": "Technology", "IRDM": "Communication Services", "ISRG": "Healthcare", "JOBY": "Industrials", "KLAC": "Technology", "LCID": "Consumer Cyclical", "LHX": "Industrials", "LOW": "Consumer Cyclical", "LRCX": "Technology", "LULU": "Consumer Cyclical", "LUV": "Industrials", "LVS": "Consumer Cyclical", "LYFT": "Technology", "MA": "Financial Services", "MAR": "Consumer Cyclical", "MARA": "Financial Services", "MDB": "Technology", "META": "Communication Services", "MGM": "Consumer Cyclical", "MLM": "Basic Materials", "MNDY": "Technology", "MOS": "Basic Materials", "MP": "Basic Materials", "MPC": "Energy", "MRNA": "Healthcare", "MRVL": "Technology", "MS": "Financial Services", "MSFT": "Technology", "MSTR": "Technology", "MU": "Technology", "NCLH": "Consumer Cyclical", "NEE": "Utilities", "NEM": "Basic Materials", "NET": "Technology", "NFLX": "Communication Services", "NKE": "Consumer Cyclical", "NOC": "Industrials", "NOW": "Technology", "NTR": "Basic Materials", "NUE": "Basic Materials", "NVDA": "Technology", "NVO": "Healthcare", "NXPI": "Technology", "OKTA": "Technology", "ON": "Technology", "OPEN": "Real Estate", "ORCL": "Technology", "OXY": "Energy", "PANW": "Technology", "PATH": "Technology", "PENN": "Consumer Cyclical", "PH": "Industrials", "PINS": "Communication Services", "PLD": "Real Estate", "PLTR": "Technology", "PLUG": "Industrials", "PSX": "Energy", "PTON": "Consumer Cyclical", "PWR": "Industrials", "PYPL": "Financial Services", "QCOM": "Technology", "QLYS": "Technology", "RCL": "Consumer Cyclical", "REGN": "Healthcare", "RIOT": "Financial Services", "RIVN": "Consumer Cyclical", "RKLB": "Industrials", "RMBS": "Technology", "ROK": "Industrials", "ROKU": "Communication Services", "RPD": "Technology", "RUN": "Technology", "S": "Technology", "SAP": "Technology", "SBUX": "Consumer Cyclical", "SCCO": "Basic Materials", "SCHW": "Financial Services", "SEDG": "Technology", "SHOP": "Technology", "SLB": "Energy", "SLV": "ETF", "SMH": "ETF", "SNAP": "Communication Services", "SNOW": "Technology", "SNPS": "Technology", "SOFI": "Financial Services", "SOXX": "ETF", "SPCE": "Industrials", "SPG": "Real Estate", "SPGI": "Financial Services", "SPOT": "Communication Services", "STX": "Technology", "SYK": "Healthcare", "TAN": "ETF", "TDOC": "Healthcare", "TEAM": "Technology", "TENB": "Technology", "TER": "Technology", "TGT": "Consumer Defensive", "TJX": "Consumer Cyclical", "TMO": "Healthcare", "TSLA": "Consumer Cyclical", "TSM": "Technology", "TT": "Industrials", "TWLO": "Technology", "TXN": "Technology", "TXT": "Industrials", "UAL": "Industrials", "UBER": "Technology", "UEC": "Energy", "UNG": "ETF", "UPS": "Industrials", "UPST": "Financial Services", "URA": "ETF", "URI": "Industrials", "USO": "ETF", "V": "Financial Services", "VEEV": "Healthcare", "VMC": "Basic Materials", "VRNS": "Technology", "VRTX": "Healthcare", "VST": "Utilities", "VTRS": "Healthcare", "W": "Consumer Cyclical", "WBD": "Communication Services", "WDAY": "Technology", "WDC": "Technology", "WFC": "Financial Services", "XLE": "ETF", "XOM": "Energy", "XYL": "Industrials", "ZM": "Technology", "ZS": "Technology", "ZTS": "Healthcare"}
+_SEC_CAP = 0   # 0 = ללא תקרה
+
 _COOL_MODE = "current"
 
 
@@ -2998,7 +3005,7 @@ def run_backtest_single(df, ticker="", score_threshold=70, max_holding_days=30,
                                 "held_earnings": entry_earnings_seen,
                                 # תשתית להקצאת משאבים: הציון בזמן הכניסה
                                 # והסקטור. בלעדיהם אין דירוג ואין ריכוזיות בדיעבד.
-                                "sector": STOCK_INFO.get(ticker, ("", ""))[1],
+                                "sector": SECTOR_MAP.get(ticker) or STOCK_INFO.get(ticker, ("", ""))[1],
                                 "partial": partial_done,
                                 "scaled": scaled_in,
                                 "entry_score": (entry_score_snapshot or entry_score_val)})
@@ -3134,6 +3141,17 @@ def simulate_realistic_portfolio(trades, position_pct=5.0, initial_capital=100.0
                 if max_positions and len(open_pos) >= max_positions:
                     skipped += 1
                     continue
+                # SECTOR-CAP: פיזור על 20 פוזיציות שכולן באותו
+                # סקטור אינו פיזור. Technology לבדה היא שליש
+                # מהיקום.
+                if _SEC_CAP:
+                    _s = t.get("sector") or ""
+                    if _s:
+                        _n = sum(1 for _p in open_pos.values()
+                                 if (_p[0].get("sector") or "") == _s)
+                        if _n >= _SEC_CAP:
+                            skipped += 1
+                            continue
                 cur_eq = cash + sum(_value(p) for p in open_pos.values())
                 _w = _vix_weight(d)
                 _VIX_EXPOSURE.append(_w)
@@ -5164,7 +5182,7 @@ with tab_backtest:
         "vb2":           DEFAULTS["vb2"],
         "vb3":           DEFAULTS["vb3"],
         # מתגי בדיקה שאין להם מקבילה ב-DEFAULTS — כבויים
-        "cost": 0.05, "vix_size": "off", "cool_mode": "off",
+        "cost": 0.05, "vix_size": "off", "cool_mode": "off", "sec_cap": 0,
         # TRAIL-CAL: רוחב הטריילינג לא זרם מהחבילה עד כה.
         "trail": 2.0,  # COOLDOWN-OFF: נמדד כמזיק בבדיקה 47 "use_reversal": False, "weekly": False, "three_day": False,
         "em_filter": False, "max_wk": 0,
@@ -5217,6 +5235,12 @@ with tab_backtest:
         # לעלויות. האם אפשר לקצץ בלי לאבד את היתרון?
         # FACTORIAL: צירופים, לא גורם-גורם. כך נמדדות
         # גם אינטראקציות ולא רק השפעות ראשיות.
+        "56 תקרת ריכוזיות סקטוריאלית": [
+            ("ללא תקרה", {"sec_cap": 0}),
+            ("עד 3 בסקטור", {"sec_cap": 3}),
+            ("עד 5 בסקטור", {"sec_cap": 5}),
+            ("עד 8 בסקטור", {"sec_cap": 8}),
+        ],
         "55 שילוב משולב": [
             ("בסיס", {}),
             ("T · trailing", {"exit": "trailing"}),
@@ -5821,6 +5845,7 @@ with tab_backtest:
                         max_trades_per_week = ovr.get("max_wk", _BASE["max_wk"])
                         effective_cost = ovr.get("cost", _BASE["cost"])
                         _eff_trail = float(ovr.get("trail", _BASE.get("trail", 2.0)))
+                        globals()["_SEC_CAP"] = int(ovr.get("sec_cap", _BASE.get("sec_cap", 0)))
                         # VIX-SIZING: הסכמה נקבעת כאן, יחד עם שאר הדריסות.
                         globals()["_VIX_SIZING"] = ovr.get("vix_size", _BASE.get("vix_size", "off"))
                         globals()["_COOL_MODE"] = ovr.get("cool_mode", _BASE.get("cool_mode", "current"))
@@ -5998,6 +6023,7 @@ with tab_backtest:
                 max_trades_per_week = ovr.get("max_wk", _BASE["max_wk"])
                 effective_cost = ovr.get("cost", _BASE["cost"])
                 _eff_trail = float(ovr.get("trail", _BASE.get("trail", 2.0)))
+                globals()["_SEC_CAP"] = int(ovr.get("sec_cap", _BASE.get("sec_cap", 0)))
                 # VIX-SIZING: הסכמה נקבעת כאן, יחד עם שאר הדריסות.
                 globals()["_VIX_SIZING"] = ovr.get("vix_size", _BASE.get("vix_size", "off"))
                 globals()["_COOL_MODE"] = ovr.get("cool_mode", _BASE.get("cool_mode", "current"))
@@ -6138,6 +6164,7 @@ with tab_backtest:
                         max_trades_per_week = ovr.get("max_wk", _BASE["max_wk"])
                         effective_cost = ovr.get("cost", _BASE["cost"])
                         _eff_trail = float(ovr.get("trail", _BASE.get("trail", 2.0)))
+                        globals()["_SEC_CAP"] = int(ovr.get("sec_cap", _BASE.get("sec_cap", 0)))
                         # VIX-SIZING: הסכמה נקבעת כאן, יחד עם שאר הדריסות.
                         globals()["_VIX_SIZING"] = ovr.get("vix_size", _BASE.get("vix_size", "off"))
                         globals()["_COOL_MODE"] = ovr.get("cool_mode", _BASE.get("cool_mode", "current"))
