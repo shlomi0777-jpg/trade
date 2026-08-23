@@ -1114,7 +1114,7 @@ STOP_LADDER_MID = [(8.0, 0.0), (12.0, 4.0), (18.0, 10.0),
 
 # ===== זהות הגרסה =====
 # תווית קריאה במקום MD5. מתעדכנת בכל כתיבה.
-APP_VERSION = "v088 · 23/08/2026 19:58"
+APP_VERSION = "v089 · 23/08/2026 20:49"
 _AUDIT_DONE = {}
 
 # VIX-SIZING: גודל חשיפה לפי VIX.
@@ -5340,6 +5340,14 @@ with tab_backtest:
             ("4 ימים", {"red_days": 4}),
             ("5 ימים", {"red_days": 5}),
         ],
+        "59 מבחן הון · חשיפה מלאה": [
+            ("מומנטום · 5%", {"trigger": "mom120"}),
+            ("מומנטום · חשיפה מלאה", {"trigger": "mom120", "pos_pct": 10, "max_pos": 10}),
+            ("3 אדומים · 5%", {"trigger": "three_red"}),
+            ("3 אדומים · חשיפה מלאה", {"trigger": "three_red", "pos_pct": 10, "max_pos": 10}),
+            ("ציון · 5%", {"trigger": "score"}),
+            ("ציון · חשיפה מלאה", {"trigger": "score", "pos_pct": 10, "max_pos": 10}),
+        ],
         "51 כל הטריגרים · תצורה זהה": [
             ("ציון (הנוכחי)", {"trigger": "score"}),
             ("3 ימים אדומים", {"trigger": "three_red"}),
@@ -6080,6 +6088,9 @@ with tab_backtest:
             mode_trades = {}
             text_reports = []
             for idx, (mode_code, exit_code, stop_code, combined_label, vmode_code, rmode_code, emode_code, gmode_code, ovr) in enumerate(bt_runs_to_execute):
+                # CAP-TEST v089: pos_pct ו-max_pos ניתנים לדריסה מהחבילה
+                eff_pos_pct = ovr.get("pos_pct", bt_position_pct)
+                eff_max_pos = ovr.get("max_pos", max_positions)
                 use_composite_bt = ovr.get("composite", _BASE["composite"])
                 directional_vol_bt = ovr.get("dir_vol", _BASE["dir_vol"])
                 block_overextended = ovr.get("block_overext", _BASE["block_overext"])
@@ -6162,14 +6173,14 @@ with tab_backtest:
                                                                       use_cooldown=use_cooldown,
                                                                       vb1=vb1, vb2=vb2, vb3=vb3,
                                                                       max_trades_per_week=max_trades_per_week)
-                s = render_aggregate(all_trades, per_ticker_stats, failed, cat_tickers, combined_label, bt_position_pct,
+                s = render_aggregate(all_trades, per_ticker_stats, failed, cat_tickers, combined_label, eff_pos_pct,
                                       benchmarks=benchmarks, show_earnings_split=show_earnings_analysis,
                                       cost_applied=effective_cost, price_map=price_map,
-                                    max_positions=max_positions)
+                                    max_positions=eff_max_pos)
                 mode_summaries[combined_label] = s
                 mode_trades[combined_label] = all_trades
                 text_reports.append(build_text_report(
-                    f"{bt_cat} | {combined_label}", {**bt_cfg, "cat": bt_cat, "pos_pct": bt_position_pct},
+                    f"{bt_cat} | {combined_label}", {**bt_cfg, "cat": bt_cat, "pos_pct": eff_pos_pct},
                     s, benchmarks, all_trades, per_ticker_stats,
                     st.session_state.get("last_blocked", {}), failed))
                 if idx < len(bt_runs_to_execute) - 1:
