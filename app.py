@@ -1114,7 +1114,7 @@ STOP_LADDER_MID = [(8.0, 0.0), (12.0, 4.0), (18.0, 10.0),
 
 # ===== זהות הגרסה =====
 # תווית קריאה במקום MD5. מתעדכנת בכל כתיבה.
-APP_VERSION = "v081 · 23/08/2026 10:05"
+APP_VERSION = "v082 · 23/08/2026 11:02"
 _AUDIT_DONE = {}
 
 # VIX-SIZING: גודל חשיפה לפי VIX.
@@ -2589,8 +2589,13 @@ def run_backtest_single(df, ticker="", score_threshold=70, max_holding_days=30,
     weekly_ok_vals = weekly_ok.values if weekly_ok is not None else None
 
     # חוק שלושת הימים - קבוצת אינדקסים חסומים אחרי ירידה חדה בעקבות דוח
-    post_earn_blocked = (compute_post_earnings_block(df, earnings_dates, three_day_drop_pct, three_day_wait)
-                          if use_three_day_rule else set())
+    # POST-EARN-DIP: אותו סט משמש גם כחסימה וגם
+    # כטריגר — תלוי בכיוון שנבחר.
+    _need_pe = use_three_day_rule or entry_trigger in (
+        "post_earn_dip", "red_or_pe")
+    post_earn_blocked = (compute_post_earnings_block(
+        df, earnings_dates, three_day_drop_pct, three_day_wait)
+        if _need_pe else set())
 
     # VIX מיושר לתאריכי המניה
     vix_vals = None
@@ -2750,6 +2755,11 @@ def run_backtest_single(df, ticker="", score_threshold=70, max_holding_days=30,
                 _j = i - 120
                 _trigger = (_j >= 0 and closes[_j] > 0
                             and closes[i] > closes[_j])
+            elif entry_trigger == "post_earn_dip":
+                # POST-EARN-DIP: כניסה דווקא בימים שהחוק חוסם.
+                _trigger = i in post_earn_blocked
+            elif entry_trigger == "red_or_pe":
+                _trigger = _red_ok or (i in post_earn_blocked)
             else:
                 _trigger = _score_ok
             # ===== זיכרון =====
@@ -5235,6 +5245,12 @@ with tab_backtest:
         # לעלויות. האם אפשר לקצץ בלי לאבד את היתרון?
         # FACTORIAL: צירופים, לא גורם-גורם. כך נמדדות
         # גם אינטראקציות ולא רק השפעות ראשיות.
+        # POST-EARN-DIP: הטענה של המקור, בבדיקה ישירה.
+        "57 ירידה אחרי דוח": [
+            ("3 אדומים (בסיס)", {}),
+            ("רק ירידת דוח", {"trigger": "post_earn_dip"}),
+            ("3 אדומים או ירידת דוח", {"trigger": "red_or_pe"}),
+        ],
         "56 תקרת ריכוזיות סקטוריאלית": [
             ("ללא תקרה", {"sec_cap": 0}),
             ("עד 3 בסקטור", {"sec_cap": 3}),
