@@ -1114,7 +1114,7 @@ STOP_LADDER_MID = [(8.0, 0.0), (12.0, 4.0), (18.0, 10.0),
 
 # ===== זהות הגרסה =====
 # תווית קריאה במקום MD5. מתעדכנת בכל כתיבה.
-APP_VERSION = "v084 · 23/08/2026 15:20"
+APP_VERSION = "v085 · 23/08/2026 18:40"
 _AUDIT_DONE = {}
 
 # VIX-SIZING: גודל חשיפה לפי VIX.
@@ -5201,7 +5201,7 @@ with tab_backtest:
         "ladder":        "off",   # סטופ מדורג: off/steady/tight
         "scale_first":   0.5,      # חלק הכניסה הראשונה
         "vn_scope":      "thr",   # off/thr/full
-        "cooldown":      True,    # זיכרון: אין כניסה חוזרת מיידית
+        "cooldown":      False,    # זיכרון: אין כניסה חוזרת מיידית
         "max_pos":       0,       # תקרת פוזיציות (0=ללא)
         "vb1":           DEFAULTS["vb1"],
         "vb2":           DEFAULTS["vb2"],
@@ -5788,8 +5788,8 @@ with tab_backtest:
              "rising_sma": False, "trigger": "score", "brk_lb": 20,
              "part_r": 2.0, "part_be": False, "dip_pct": 10.0,
              "scale": "off", "scale_drop": 5.0, "ladder": "off",
-             "scale_first": 0.5, "vn_scope": "thr", "cooldown": True,
-             "max_pos": 0}
+             "scale_first": 0.5, "vn_scope": "thr", "cooldown": False,
+             "max_pos": 0, "cool_mode": "off"}
     if _suite_specs is not None:
         _BASE.update({k: v for k, v in SUITE_BASE.items() if k in _BASE})
         for _lbl, _ov in _suite_specs:
