@@ -1114,7 +1114,7 @@ STOP_LADDER_MID = [(8.0, 0.0), (12.0, 4.0), (18.0, 10.0),
 
 # ===== זהות הגרסה =====
 # תווית קריאה במקום MD5. מתעדכנת בכל כתיבה.
-APP_VERSION = "v083 · 23/08/2026 15:14"
+APP_VERSION = "v084 · 23/08/2026 15:20"
 _AUDIT_DONE = {}
 
 # VIX-SIZING: גודל חשיפה לפי VIX.
@@ -2945,6 +2945,17 @@ def run_backtest_single(df, ticker="", score_threshold=70, max_holding_days=30,
                 entry_earnings_seen = True
 
             days_held = i - entry_idx
+            # ATR-COST-FIX: מחושב פעם אחת לכל נר, לפני כל
+            # הסתעפות — שלושת מסלולי היציאה משתמשים בו.
+            _cps = cost_pct_per_side
+            if _ATR_COST:
+                try:
+                    _a = _A["atr"][i]
+                    if np.isfinite(_a) and closes[i] > 0:
+                        _cps = cost_pct_per_side + _ATR_COST * (
+                            _a / closes[i] * 100)
+                except Exception:
+                    pass
             # ===== יציאה על היפוך מגמה =====
             # reversal_min_days מונע יציאה מיידית ביום הראשון על רעש קצר.
             hit_reversal = False
@@ -3001,12 +3012,6 @@ def run_backtest_single(df, ticker="", score_threshold=70, max_holding_days=30,
                         _add_w = (1.0 - scale_first) if scaled_in else 0.0
                     gross_ret = _base_w * _final_ret + _add_w * _r2
                     _n_ops = 3 if scaled_in else 2
-                    # ATR-COST: העלות גדלה עם התנודתיות של המניה עצמה.
-                    _atr_now = _A["atr"][i] if "atr" in _A else float("nan")
-                    _cps = cost_pct_per_side
-                    if _ATR_COST and np.isfinite(_atr_now) and closes[i] > 0:
-                        _cps = cost_pct_per_side + _ATR_COST * (
-                            _atr_now / closes[i] * 100)
                     ret_pct = gross_ret - (_cps * _n_ops)
                 elif partial_done:
                     # חצי מומש ביעד, חצי יצא בסוף. שלוש פעולות = עלות כפול 3.
