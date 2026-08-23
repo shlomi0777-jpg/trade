@@ -1114,7 +1114,7 @@ STOP_LADDER_MID = [(8.0, 0.0), (12.0, 4.0), (18.0, 10.0),
 
 # ===== זהות הגרסה =====
 # תווית קריאה במקום MD5. מתעדכנת בכל כתיבה.
-APP_VERSION = "v086 · 23/08/2026 19:09"
+APP_VERSION = "v087 · 23/08/2026 19:47"
 _AUDIT_DONE = {}
 
 # VIX-SIZING: גודל חשיפה לפי VIX.
@@ -5371,9 +5371,9 @@ with tab_backtest:
         ],
         "47 מדיניות המתנה": [
             ("כבוי", {"cooldown": False}),
-            ("נוכחי", {"cool_mode": "current"}),
-            ("רק אחרי סטופ", {"cool_mode": "sl_only"}),
-            ("קצר · 3 ימים", {"cool_mode": "short"}),
+            ("נוכחי", {"cooldown": True, "cool_mode": "current"}),
+            ("רק אחרי סטופ", {"cooldown": True, "cool_mode": "sl_only"}),
+            ("קצר · 3 ימים", {"cooldown": True, "cool_mode": "short"}),
         ],
         "46 חשיפה לפי VIX": [
             ("קבוע", {"vix_size": "off"}),
