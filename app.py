@@ -1114,7 +1114,7 @@ STOP_LADDER_MID = [(8.0, 0.0), (12.0, 4.0), (18.0, 10.0),
 
 # ===== זהות הגרסה =====
 # תווית קריאה במקום MD5. מתעדכנת בכל כתיבה.
-APP_VERSION = "v082 · 23/08/2026 11:02"
+APP_VERSION = "v083 · 23/08/2026 15:14"
 _AUDIT_DONE = {}
 
 # VIX-SIZING: גודל חשיפה לפי VIX.
@@ -1130,6 +1130,10 @@ _VIX_SIZING = "off"
 # מניות) ולכן ממוצע סקטור עליו הוא ממוצע של מניה
 # אחת. 386 טריידים יצאו עם סקטור ריק.
 SECTOR_MAP = {"AA": "Basic Materials", "AAPL": "Technology", "ABNB": "Consumer Cyclical", "ACN": "Technology", "ADBE": "Technology", "ADI": "Technology", "ADM": "Consumer Defensive", "AFRM": "Financial Services", "AI": "Technology", "AIG": "Financial Services", "ALB": "Basic Materials", "AMAT": "Technology", "AMC": "Communication Services", "AMD": "Technology", "AMT": "Real Estate", "AMZN": "Consumer Cyclical", "ARKK": "ETF", "ASML": "Technology", "AVGO": "Technology", "AXP": "Financial Services", "BA": "Industrials", "BAC": "Financial Services", "BBBY": "Unknown", "BE": "Industrials", "BG": "Consumer Defensive", "BIIB": "Healthcare", "BKNG": "Consumer Cyclical", "BLDP": "Industrials", "BLK": "Financial Services", "BNO": "ETF", "C": "Financial Services", "CAT": "Industrials", "CCJ": "Energy", "CCL": "Consumer Cyclical", "CDNS": "Technology", "CF": "Basic Materials", "CHWY": "Consumer Cyclical", "CLF": "Basic Materials", "CMG": "Consumer Cyclical", "COIN": "Financial Services", "COP": "Energy", "COST": "Consumer Defensive", "CRM": "Technology", "CRWD": "Technology", "CVNA": "Consumer Cyclical", "CVX": "Energy", "CZR": "Consumer Cyclical", "DAL": "Industrials", "DASH": "Consumer Cyclical", "DDOG": "Technology", "DE": "Industrials", "DHR": "Healthcare", "DIS": "Communication Services", "DKNG": "Consumer Cyclical", "DLR": "Real Estate", "DOCU": "Technology", "DXCM": "Healthcare", "EBAY": "Consumer Cyclical", "ECL": "Basic Materials", "ENPH": "Technology", "ENTG": "Technology", "EOG": "Energy", "EQIX": "Real Estate", "ESTC": "Technology", "ETSY": "Consumer Cyclical", "F": "Consumer Cyclical", "FCEL": "Industrials", "FCX": "Basic Materials", "FDX": "Industrials", "FSLR": "Technology", "FTNT": "Technology", "GE": "Industrials", "GM": "Consumer Cyclical", "GME": "Consumer Cyclical", "GOOGL": "Communication Services", "GTLB": "Technology", "HAL": "Energy", "HD": "Consumer Cyclical", "HLT": "Consumer Cyclical", "HOOD": "Financial Services", "HUBS": "Technology", "HUT": "Financial Services", "ICLN": "ETF", "INTC": "Technology", "INTU": "Technology", "IONQ": "Technology", "IRDM": "Communication Services", "ISRG": "Healthcare", "JOBY": "Industrials", "KLAC": "Technology", "LCID": "Consumer Cyclical", "LHX": "Industrials", "LOW": "Consumer Cyclical", "LRCX": "Technology", "LULU": "Consumer Cyclical", "LUV": "Industrials", "LVS": "Consumer Cyclical", "LYFT": "Technology", "MA": "Financial Services", "MAR": "Consumer Cyclical", "MARA": "Financial Services", "MDB": "Technology", "META": "Communication Services", "MGM": "Consumer Cyclical", "MLM": "Basic Materials", "MNDY": "Technology", "MOS": "Basic Materials", "MP": "Basic Materials", "MPC": "Energy", "MRNA": "Healthcare", "MRVL": "Technology", "MS": "Financial Services", "MSFT": "Technology", "MSTR": "Technology", "MU": "Technology", "NCLH": "Consumer Cyclical", "NEE": "Utilities", "NEM": "Basic Materials", "NET": "Technology", "NFLX": "Communication Services", "NKE": "Consumer Cyclical", "NOC": "Industrials", "NOW": "Technology", "NTR": "Basic Materials", "NUE": "Basic Materials", "NVDA": "Technology", "NVO": "Healthcare", "NXPI": "Technology", "OKTA": "Technology", "ON": "Technology", "OPEN": "Real Estate", "ORCL": "Technology", "OXY": "Energy", "PANW": "Technology", "PATH": "Technology", "PENN": "Consumer Cyclical", "PH": "Industrials", "PINS": "Communication Services", "PLD": "Real Estate", "PLTR": "Technology", "PLUG": "Industrials", "PSX": "Energy", "PTON": "Consumer Cyclical", "PWR": "Industrials", "PYPL": "Financial Services", "QCOM": "Technology", "QLYS": "Technology", "RCL": "Consumer Cyclical", "REGN": "Healthcare", "RIOT": "Financial Services", "RIVN": "Consumer Cyclical", "RKLB": "Industrials", "RMBS": "Technology", "ROK": "Industrials", "ROKU": "Communication Services", "RPD": "Technology", "RUN": "Technology", "S": "Technology", "SAP": "Technology", "SBUX": "Consumer Cyclical", "SCCO": "Basic Materials", "SCHW": "Financial Services", "SEDG": "Technology", "SHOP": "Technology", "SLB": "Energy", "SLV": "ETF", "SMH": "ETF", "SNAP": "Communication Services", "SNOW": "Technology", "SNPS": "Technology", "SOFI": "Financial Services", "SOXX": "ETF", "SPCE": "Industrials", "SPG": "Real Estate", "SPGI": "Financial Services", "SPOT": "Communication Services", "STX": "Technology", "SYK": "Healthcare", "TAN": "ETF", "TDOC": "Healthcare", "TEAM": "Technology", "TENB": "Technology", "TER": "Technology", "TGT": "Consumer Defensive", "TJX": "Consumer Cyclical", "TMO": "Healthcare", "TSLA": "Consumer Cyclical", "TSM": "Technology", "TT": "Industrials", "TWLO": "Technology", "TXN": "Technology", "TXT": "Industrials", "UAL": "Industrials", "UBER": "Technology", "UEC": "Energy", "UNG": "ETF", "UPS": "Industrials", "UPST": "Financial Services", "URA": "ETF", "URI": "Industrials", "USO": "ETF", "V": "Financial Services", "VEEV": "Healthcare", "VMC": "Basic Materials", "VRNS": "Technology", "VRTX": "Healthcare", "VST": "Utilities", "VTRS": "Healthcare", "W": "Consumer Cyclical", "WBD": "Communication Services", "WDAY": "Technology", "WDC": "Technology", "WFC": "Financial Services", "XLE": "ETF", "XOM": "Energy", "XYL": "Industrials", "ZM": "Technology", "ZS": "Technology", "ZTS": "Healthcare"}
+# ATR-COST: תוספת עלות פר יחידת ATR%. 0 = מנוטרל.
+# ספרד והחלקה גדלים בתנודתיות; מספר קבוע מחמיא
+# למניות התנודתיות ומעניש את השקטות.
+_ATR_COST = 0.0
 _SEC_CAP = 0   # 0 = ללא תקרה
 
 _COOL_MODE = "current"
@@ -2997,14 +3001,20 @@ def run_backtest_single(df, ticker="", score_threshold=70, max_holding_days=30,
                         _add_w = (1.0 - scale_first) if scaled_in else 0.0
                     gross_ret = _base_w * _final_ret + _add_w * _r2
                     _n_ops = 3 if scaled_in else 2
-                    ret_pct = gross_ret - (cost_pct_per_side * _n_ops)
+                    # ATR-COST: העלות גדלה עם התנודתיות של המניה עצמה.
+                    _atr_now = _A["atr"][i] if "atr" in _A else float("nan")
+                    _cps = cost_pct_per_side
+                    if _ATR_COST and np.isfinite(_atr_now) and closes[i] > 0:
+                        _cps = cost_pct_per_side + _ATR_COST * (
+                            _atr_now / closes[i] * 100)
+                    ret_pct = gross_ret - (_cps * _n_ops)
                 elif partial_done:
                     # חצי מומש ביעד, חצי יצא בסוף. שלוש פעולות = עלות כפול 3.
                     gross_ret = 0.5 * partial_ret + 0.5 * _final_ret
-                    ret_pct = gross_ret - (cost_pct_per_side * 3)
+                    ret_pct = gross_ret - (_cps * 3)
                 else:
                     gross_ret = _final_ret
-                    ret_pct = apply_trade_cost(gross_ret, cost_pct_per_side)
+                    ret_pct = apply_trade_cost(gross_ret, _cps)
                 # הזיכרון: כמה ימים להמתין לפני כניסה חוזרת למניה הזו
                 last_exit_reason = reason
                 cooldown_until = i + _cool_days(reason)
@@ -5192,7 +5202,7 @@ with tab_backtest:
         "vb2":           DEFAULTS["vb2"],
         "vb3":           DEFAULTS["vb3"],
         # מתגי בדיקה שאין להם מקבילה ב-DEFAULTS — כבויים
-        "cost": 0.05, "vix_size": "off", "cool_mode": "off", "sec_cap": 0,
+        "cost": 0.05, "vix_size": "off", "cool_mode": "off", "sec_cap": 0, "atr_cost": 0.0,
         # TRAIL-CAL: רוחב הטריילינג לא זרם מהחבילה עד כה.
         "trail": 2.0,  # COOLDOWN-OFF: נמדד כמזיק בבדיקה 47 "use_reversal": False, "weekly": False, "three_day": False,
         "em_filter": False, "max_wk": 0,
@@ -5246,6 +5256,14 @@ with tab_backtest:
         # FACTORIAL: צירופים, לא גורם-גורם. כך נמדדות
         # גם אינטראקציות ולא רק השפעות ראשיות.
         # POST-EARN-DIP: הטענה של המקור, בבדיקה ישירה.
+        # ATR-COST: האם היתרון שורד תמחור ריאלי?
+        "58 עלות ריאלית לפי תנודתיות": [
+            ("קבוע 0.05% (הבסיס)", {}),
+            ("קבוע 0.10%", {"cost": 0.10}),
+            ("0.03% + 0.01×ATR", {"cost": 0.03, "atr_cost": 0.01}),
+            ("0.03% + 0.02×ATR", {"cost": 0.03, "atr_cost": 0.02}),
+            ("0.05% + 0.02×ATR", {"cost": 0.05, "atr_cost": 0.02}),
+        ],
         "57 ירידה אחרי דוח": [
             ("3 אדומים (בסיס)", {}),
             ("רק ירידת דוח", {"trigger": "post_earn_dip"}),
@@ -5862,6 +5880,7 @@ with tab_backtest:
                         effective_cost = ovr.get("cost", _BASE["cost"])
                         _eff_trail = float(ovr.get("trail", _BASE.get("trail", 2.0)))
                         globals()["_SEC_CAP"] = int(ovr.get("sec_cap", _BASE.get("sec_cap", 0)))
+                        globals()["_ATR_COST"] = float(ovr.get("atr_cost", _BASE.get("atr_cost", 0.0)))
                         # VIX-SIZING: הסכמה נקבעת כאן, יחד עם שאר הדריסות.
                         globals()["_VIX_SIZING"] = ovr.get("vix_size", _BASE.get("vix_size", "off"))
                         globals()["_COOL_MODE"] = ovr.get("cool_mode", _BASE.get("cool_mode", "current"))
@@ -6040,6 +6059,7 @@ with tab_backtest:
                 effective_cost = ovr.get("cost", _BASE["cost"])
                 _eff_trail = float(ovr.get("trail", _BASE.get("trail", 2.0)))
                 globals()["_SEC_CAP"] = int(ovr.get("sec_cap", _BASE.get("sec_cap", 0)))
+                globals()["_ATR_COST"] = float(ovr.get("atr_cost", _BASE.get("atr_cost", 0.0)))
                 # VIX-SIZING: הסכמה נקבעת כאן, יחד עם שאר הדריסות.
                 globals()["_VIX_SIZING"] = ovr.get("vix_size", _BASE.get("vix_size", "off"))
                 globals()["_COOL_MODE"] = ovr.get("cool_mode", _BASE.get("cool_mode", "current"))
@@ -6181,6 +6201,7 @@ with tab_backtest:
                         effective_cost = ovr.get("cost", _BASE["cost"])
                         _eff_trail = float(ovr.get("trail", _BASE.get("trail", 2.0)))
                         globals()["_SEC_CAP"] = int(ovr.get("sec_cap", _BASE.get("sec_cap", 0)))
+                        globals()["_ATR_COST"] = float(ovr.get("atr_cost", _BASE.get("atr_cost", 0.0)))
                         # VIX-SIZING: הסכמה נקבעת כאן, יחד עם שאר הדריסות.
                         globals()["_VIX_SIZING"] = ovr.get("vix_size", _BASE.get("vix_size", "off"))
                         globals()["_COOL_MODE"] = ovr.get("cool_mode", _BASE.get("cool_mode", "current"))
