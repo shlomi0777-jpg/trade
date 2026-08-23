@@ -1114,7 +1114,7 @@ STOP_LADDER_MID = [(8.0, 0.0), (12.0, 4.0), (18.0, 10.0),
 
 # ===== זהות הגרסה =====
 # תווית קריאה במקום MD5. מתעדכנת בכל כתיבה.
-APP_VERSION = "v092 · 23/08/2026 22:43"
+APP_VERSION = "v093 · 24/08/2026 00:09"
 _AUDIT_DONE = {}
 
 # VIX-SIZING: גודל חשיפה לפי VIX.
@@ -2506,7 +2506,11 @@ def fast_technical_score(A, i, directional_vol=True):
     elif dc > 0.3: vol_s = base_vol
     elif dc < -0.3: vol_s = max(10, 100 - base_vol)
     else: vol_s = 50
-    score = trend * 0.35 + rsi_s * 0.25 + macd_s * 0.25 + vol_s * 0.15
+    # SCORE-MODE v093: היפוך שלושת הרכיבים שנמדדו כהפוכים
+    if globals().get("_SCORE_MODE", "current") == "inverted":
+        score = ((100 - trend) * 0.35 + (100 - rsi_s) * 0.25 + (100 - macd_s) * 0.25 + vol_s * 0.15)
+    else:
+        score = trend * 0.35 + rsi_s * 0.25 + macd_s * 0.25 + vol_s * 0.15
     return score, {"rsi_raw": rsi_val, "vol_ratio": vr, "pc5": A["pc5"][i]}
 
 
@@ -5340,6 +5344,10 @@ with tab_backtest:
             ("4 ימים", {"red_days": 4}),
             ("5 ימים", {"red_days": 5}),
         ],
+        "61 · ציון הפוך": [
+            ("ציון נוכחי", {"trigger": "score", "pos_pct": 0.25}),
+            ("ציון הפוך", {"trigger": "score", "pos_pct": 0.25, "score_mode": "inverted"}),
+        ],
         "60 · ללא מגבלת הון": [
             ("מומנטום 120", {"trigger": "mom120", "pos_pct": 0.25}),
             ("3 ימים אדומים", {"trigger": "three_red", "pos_pct": 0.25}),
@@ -6094,6 +6102,7 @@ with tab_backtest:
             text_reports = []
             for idx, (mode_code, exit_code, stop_code, combined_label, vmode_code, rmode_code, emode_code, gmode_code, ovr) in enumerate(bt_runs_to_execute):
                 # CAP-TEST v089: pos_pct ו-max_pos ניתנים לדריסה מהחבילה
+                globals()["_SCORE_MODE"] = ovr.get("score_mode", "current")
                 eff_pos_pct = ovr.get("pos_pct", bt_position_pct)
                 use_composite_bt = ovr.get("composite", _BASE["composite"])
                 directional_vol_bt = ovr.get("dir_vol", _BASE["dir_vol"])
