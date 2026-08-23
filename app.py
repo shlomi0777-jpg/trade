@@ -1114,7 +1114,7 @@ STOP_LADDER_MID = [(8.0, 0.0), (12.0, 4.0), (18.0, 10.0),
 
 # ===== זהות הגרסה =====
 # תווית קריאה במקום MD5. מתעדכנת בכל כתיבה.
-APP_VERSION = "v085 · 23/08/2026 18:40"
+APP_VERSION = "v086 · 23/08/2026 19:09"
 _AUDIT_DONE = {}
 
 # VIX-SIZING: גודל חשיפה לפי VIX.
@@ -1290,14 +1290,41 @@ def fetch_stock_data(ticker):
 # DATE-RANGE: תקופה יחסית ("3y") או טווח מפורש
 # ("2023-01-01:2024-12-31"). כל השליפות עוברות כאן,
 # כדי שלא יהיה מסלול שמפרש אחרת ממסלול אחר.
+# FROZEN-CACHE v086: מקור מחירים יחיד וקפוא
+@st.cache_resource
+def _load_price_cache():
+    import os as _os, json as _json
+    _b = '/content/drive/MyDrive/base44'
+    _p = _os.path.join(_b, 'price_cache.parquet')
+    if not _os.path.exists(_p):
+        _b = _os.path.dirname(_os.path.abspath(__file__))
+        _p = _os.path.join(_b, 'price_cache.parquet')
+    if not _os.path.exists(_p):
+        raise RuntimeError('FROZEN: price_cache.parquet not found')
+    _df = pd.read_parquet(_p)
+    _mp = _os.path.join(_b, 'price_cache_meta.json')
+    _mt = _json.load(open(_mp, encoding='utf-8'))
+    return _df.groupby('ticker'), _mt
+
+
 def _hist_window(tk, period):
-    try:
-        if isinstance(period, str) and ":" in period:
-            _s, _e = period.split(":", 1)
-            return yf.Ticker(tk).history(start=_s.strip(), end=_e.strip())
-    except Exception:
-        pass
-    return yf.Ticker(tk).history(period=period)
+    _c, _meta = _load_price_cache()
+    if tk not in _c.groups:
+        raise RuntimeError('FROZEN: no data for ' + str(tk))
+    d = _c.get_group(tk).set_index('Date')
+    d = d.drop(columns=['ticker'])
+    asof = pd.Timestamp(_meta['asof'])
+    p = str(period)
+    if ':' in p:
+        _s, _e = p.split(':', 1)
+        return d.loc[pd.Timestamp(_s.strip()):pd.Timestamp(_e.strip())]
+    m = re.match(r'(\d+)y', p)
+    if m:
+        return d.loc[asof - pd.DateOffset(years=int(m.group(1))):asof]
+    m = re.match(r'(\d+)mo', p)
+    if m:
+        return d.loc[asof - pd.DateOffset(months=int(m.group(1))):asof]
+    return d.loc[:asof]
 
 
 def fetch_stock_data_backtest(ticker, period="3y"):
