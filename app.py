@@ -2508,7 +2508,7 @@ def fast_technical_score(A, i, directional_vol=True):
     else: vol_s = 50
     # SCORE-MODE v093: היפוך שלושת הרכיבים שנמדדו כהפוכים
     if globals().get("_SCORE_MODE", "current") == "inverted":
-        score = ((100 - trend) * 0.35 + (100 - rsi_s) * 0.25 + (100 - macd_s) * 0.25 + vol_s * 0.15)
+        score = (trend * 0.35 + rsi_s * 0.25 + macd_s * 0.25 + vol_s * 0.15)
     else:
         score = trend * 0.35 + rsi_s * 0.25 + macd_s * 0.25 + vol_s * 0.15
     return score, {"rsi_raw": rsi_val, "vol_ratio": vr, "pc5": A["pc5"][i]}
